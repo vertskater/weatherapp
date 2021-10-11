@@ -3,6 +3,24 @@ let whatTemp = false;
 const switcher = document.querySelector(".switcher");
 switcher.classList.remove("animate");
 
+function getLocation() {
+    let locationToCity;
+    navigator.geolocation.getCurrentPosition(
+        async (pos) => {
+            let long = pos.coords.longitude;
+            let lat = pos.coords.latitude;
+            locationToCity = await fetch(
+                `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${long}&localityLanguage=en`
+            );
+            locationToCity = await locationToCity.json();
+            console.log(locationToCity.city, locationToCity.countryCode);
+        },
+        async (err) => {
+            console.log(err);
+        }
+    );
+}
+
 async function weatherData(city) {
     const responseCelsius = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=b027513fdfc1efe52bc162e6113654d5`
@@ -82,6 +100,8 @@ function setData() {
             renderHTML(Weather);
         }
     });
+    let test = getLocation();
+    //console.log(test);
     createObject(Weather, "graz");
 }
 

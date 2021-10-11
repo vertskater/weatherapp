@@ -61,10 +61,10 @@ input[type="text"] {
     height: 40px;
     font-size: 20px;
     margin: auto;
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgb(255, 255, 255);
     border: none;
     border-bottom: 2px solid darkcyan;
-    color: white;
+    color: gray;
     &:focus-visible {
         outline: none;
     }
@@ -128,5 +128,8 @@ footer {
         top: 25%;
         left: 30%;
         z-index: 99;
+    }
+    input[type="text"] {
+        width: 80%;
     }
 }
