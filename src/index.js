@@ -78,6 +78,7 @@ function setData() {
             createObject(Weather, location.value);
             const switcher = document.querySelector(".switcher");
             switcher.classList.remove("animate");
+            whatTemp = false;
             renderHTML(Weather);
         }
     });
@@ -177,22 +178,36 @@ function switchTemp(data) {
 }*/
 const switchTemp = document.querySelector(".switch");
 switchTemp.addEventListener("click", changeTemp);
-whatTemp = false;
 function changeTemp() {
     const switcher = document.querySelector(".switcher");
     let degreesHtml = document.querySelector(".degrees");
+    let maxTempLowTemp = document.querySelector(".max-low");
+    let maxLow = findNumers(maxTempLowTemp);
     switcher.classList.toggle("animate");
     whatTemp ? (whatTemp = false) : (whatTemp = true);
-    console.log(whatTemp);
     if (whatTemp) {
         let degreesC = parseFloat(degreesHtml.textContent);
         let fahr = degreesC * 1.8 + 32;
         degreesHtml.textContent = fahr;
+        let minF = maxLow[0] * 1.8 + 32;
+        let maxF = maxLow[1] * 1.8 + 32;
+        maxTempLowTemp.textContent = `min Temp: ${minF.toFixed(1)}
+         °F, max Temp: ${maxF.toFixed(1)} °F`;
     } else {
         let degreesF = parseFloat(degreesHtml.textContent);
         let cels = ((degreesF - 32) * 5) / 9;
         degreesHtml.textContent = cels.toFixed(1);
+        let minC = (maxLow[0] - 32) * (5 / 9);
+        let maxC = (maxLow[1] - 32) * (5 / 9);
+        maxTempLowTemp.textContent = `min Temp: ${minC.toFixed(1)}
+         °C, max Temp: ${maxC.toFixed(1)} °C`;
     }
+}
+
+function findNumers(maxTempLowTemp) {
+    let reg = /[+-]?\d+(\.\d+)?/g;
+    let numbers = maxTempLowTemp.textContent.match(reg);
+    return numbers;
 }
 
 setData();
