@@ -3,7 +3,7 @@ let whatTemp = false;
 const switcher = document.querySelector(".switcher");
 switcher.classList.remove("animate");
 
-function getLocation() {
+function getLocation(Weather) {
     let locationToCity;
     navigator.geolocation.getCurrentPosition(
         async (pos) => {
@@ -13,10 +13,16 @@ function getLocation() {
                 `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${long}&localityLanguage=en`
             );
             locationToCity = await locationToCity.json();
-            console.log(locationToCity.city, locationToCity.countryCode);
+            //console.log(locationToCity.city, locationToCity.countryCode);
+            console.log(locationToCity.locality);
+            if (locationToCity.city) {
+                createObject(Weather, locationToCity.city);
+            } else {
+                createObject(Weather, locationToCity.locality);
+            }
         },
         async (err) => {
-            console.log(err);
+            if (err) createObject(Weather, "graz");
         }
     );
 }
@@ -100,9 +106,9 @@ function setData() {
             renderHTML(Weather);
         }
     });
-    let test = getLocation();
+    getLocation(Weather);
     //console.log(test);
-    createObject(Weather, "graz");
+    //createObject(Weather, "graz");
 }
 
 function createObject(Weather, location) {
@@ -208,7 +214,7 @@ function changeTemp() {
     if (whatTemp) {
         let degreesC = parseFloat(degreesHtml.textContent);
         let fahr = degreesC * 1.8 + 32;
-        degreesHtml.textContent = fahr;
+        degreesHtml.textContent = fahr.toFixed(1);
         let minF = maxLow[0] * 1.8 + 32;
         let maxF = maxLow[1] * 1.8 + 32;
         maxTempLowTemp.textContent = `min Temp: ${minF.toFixed(1)}
