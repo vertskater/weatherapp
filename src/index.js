@@ -1,4 +1,7 @@
 import "./style.scss";
+let whatTemp = false;
+const switcher = document.querySelector(".switcher");
+switcher.classList.remove("animate");
 
 async function weatherData(city) {
     const responseCelsius = await fetch(
@@ -24,6 +27,13 @@ async function weatherData(city) {
 function errorMsg(err) {
     const inputCountry = document.querySelector("#error");
     inputCountry.textContent = err;
+    document.querySelector(".weather");
+    document.querySelector(".icon-img").textContent = "no Data";
+    document.querySelector(".country").textContent = "no Data";
+    document.querySelector(".condition").textContent = "no Data";
+    document.querySelector(".clouds").textContent = "no Data";
+    document.querySelector(".max-low").textContent = "no Data";
+    document.querySelector(".degrees").textContent = "no Data";
 }
 
 function setData() {
@@ -66,6 +76,9 @@ function setData() {
     location.addEventListener("keypress", (e) => {
         if (e.key === "Enter") {
             createObject(Weather, location.value);
+            const switcher = document.querySelector(".switcher");
+            switcher.classList.remove("animate");
+            renderHTML(Weather);
         }
     });
     createObject(Weather, "graz");
@@ -73,26 +86,28 @@ function setData() {
 
 function createObject(Weather, location) {
     const currentWeather = weatherData(location);
-    currentWeather.then((currentData) => {
-        let data = new Weather(
-            currentData[0].weather[0].id,
-            currentData[0].main.temp,
-            currentData[1].main.temp,
-            currentData[0].main.temp_min,
-            currentData[1].main.temp_min,
-            currentData[0].main.temp_max,
-            currentData[1].main.temp_max,
-            currentData[0].main.feels_like,
-            currentData[1].main.feels_like,
-            currentData[0].weather[0].main,
-            currentData[0].weather[0].description,
-            currentData[0].weather[0].icon,
-            currentData[0].clouds.all,
-            currentData[0].sys.country,
-            location.toUpperCase()
-        );
-        renderHTML(data);
-    });
+    currentWeather
+        .then((currentData) => {
+            let data = new Weather(
+                currentData[0].weather[0].id,
+                currentData[0].main.temp,
+                currentData[1].main.temp,
+                currentData[0].main.temp_min,
+                currentData[1].main.temp_min,
+                currentData[0].main.temp_max,
+                currentData[1].main.temp_max,
+                currentData[0].main.feels_like,
+                currentData[1].main.feels_like,
+                currentData[0].weather[0].main,
+                currentData[0].weather[0].description,
+                currentData[0].weather[0].icon,
+                currentData[0].clouds.all,
+                currentData[0].sys.country,
+                location.toUpperCase()
+            );
+            renderHTML(data);
+        })
+        .catch((err) => errorMsg(err));
 }
 
 function renderHTML(data) {
@@ -105,6 +120,7 @@ function renderHTML(data) {
     country.textContent = data.city + ", " + data.country;
     condition.textContent = data.condDescription;
     clouds.textContent = data.clouds + " % Clouds";
+    degrees.textContent = parseInt(data.tempC) + " °C";
     maxLow.textContent =
         "min Temp: " +
         parseInt(data.minTempC) +
@@ -113,14 +129,13 @@ function renderHTML(data) {
         "max Temp: " +
         data.maxTempC +
         " °C";
-    degrees.textContent = parseInt(data.tempC) + " °C";
+
     let url = `http://openweathermap.org/img/wn/${data.wIcon}@2x.png`;
     icon.src = url;
     weatherBackground(data.id);
 }
 
 function weatherBackground(cond) {
-    console.log(cond);
     const pics = {
         fewclouds:
             "https://images.unsplash.com/photo-1601297183305-6df142704ea2?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1374&q=80",
@@ -147,6 +162,36 @@ function weatherBackground(cond) {
         document.body.style.backgroundImage = "url(" + pics.thunder + ")";
     } else if (cond >= 600 && cond <= 622) {
         document.body.style.backgroundImage = "url(" + pics.snow + ")";
+    }
+}
+/*
+function switchTemp(data) {
+    const switchTemp = document.querySelector(".switch");
+    whatTemp = false;
+    switchTemp.addEventListener("click", () => {
+        switcher.classList.toggle("animate");
+        whatTemp ? (whatTemp = false) : (whatTemp = true);
+        renderHTML(data, whatTemp);
+    });
+    renderHTML(data, whatTemp);
+}*/
+const switchTemp = document.querySelector(".switch");
+switchTemp.addEventListener("click", changeTemp);
+whatTemp = false;
+function changeTemp() {
+    const switcher = document.querySelector(".switcher");
+    let degreesHtml = document.querySelector(".degrees");
+    switcher.classList.toggle("animate");
+    whatTemp ? (whatTemp = false) : (whatTemp = true);
+    console.log(whatTemp);
+    if (whatTemp) {
+        let degreesC = parseFloat(degreesHtml.textContent);
+        let fahr = degreesC * 1.8 + 32;
+        degreesHtml.textContent = fahr;
+    } else {
+        let degreesF = parseFloat(degreesHtml.textContent);
+        let cels = ((degreesF - 32) * 5) / 9;
+        degreesHtml.textContent = cels.toFixed(1);
     }
 }
 
