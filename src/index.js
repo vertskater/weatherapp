@@ -13,8 +13,6 @@ function getLocation(Weather) {
                 `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${long}&localityLanguage=en`
             );
             locationToCity = await locationToCity.json();
-            //console.log(locationToCity.city, locationToCity.countryCode);
-            console.log(locationToCity.locality);
             if (locationToCity.city) {
                 createObject(Weather, locationToCity.city);
             } else {
@@ -22,7 +20,7 @@ function getLocation(Weather) {
             }
         },
         async (err) => {
-            if (err) createObject(Weather, "graz");
+            if (err) createObject(Weather, "wien");
         }
     );
 }
@@ -107,8 +105,6 @@ function setData() {
         }
     });
     getLocation(Weather);
-    //console.log(test);
-    //createObject(Weather, "graz");
 }
 
 function createObject(Weather, location) {
@@ -191,17 +187,7 @@ function weatherBackground(cond) {
         document.body.style.backgroundImage = "url(" + pics.snow + ")";
     }
 }
-/*
-function switchTemp(data) {
-    const switchTemp = document.querySelector(".switch");
-    whatTemp = false;
-    switchTemp.addEventListener("click", () => {
-        switcher.classList.toggle("animate");
-        whatTemp ? (whatTemp = false) : (whatTemp = true);
-        renderHTML(data, whatTemp);
-    });
-    renderHTML(data, whatTemp);
-}*/
+
 const switchTemp = document.querySelector(".switch");
 switchTemp.addEventListener("click", changeTemp);
 function changeTemp() {
