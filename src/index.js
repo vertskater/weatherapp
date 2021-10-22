@@ -2,6 +2,7 @@ import "./style.scss";
 let whatTemp = false;
 const switcher = document.querySelector(".switcher");
 switcher.classList.remove("animate");
+const loading = document.querySelector(".loader");
 
 function getLocation(Weather) {
     let locationToCity;
@@ -48,9 +49,12 @@ async function weatherData(city) {
 }
 function errorMsg(err) {
     const inputCountry = document.querySelector("#error");
-    inputCountry.textContent = err;
+    inputCountry.textContent = "Sorry, no location found!";
     document.querySelector(".weather");
-    document.querySelector(".icon-img").textContent = "no Data";
+    const icon = document.querySelector(".icon-img");
+    icon.src =
+        "https://images.unsplash.com/photo-1594322436404-5a0526db4d13?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1429&q=80";
+    icon.width = "200";
     document.querySelector(".country").textContent = "no Data";
     document.querySelector(".condition").textContent = "no Data";
     document.querySelector(".clouds").textContent = "no Data";
@@ -156,6 +160,7 @@ function renderHTML(data) {
     let url = `http://openweathermap.org/img/wn/${data.wIcon}@2x.png`;
     icon.src = url;
     weatherBackground(data.id);
+    loading.style.display = "none";
 }
 
 function weatherBackground(cond) {
