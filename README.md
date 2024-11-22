@@ -2,9 +2,6 @@
 
 Welcome to the **Weather App**! This project is a responsive web application that provides real-time weather updates for any city worldwide. With a clean and intuitive design, it fetches weather data using an external API and displays key details like temperature, weather conditions, and more.
 
-![Weather App Screenshot](https://via.placeholder.com/800x400?text=Screenshot+of+Weather+App)  
-*[Replace with an actual screenshot of your app]*
-
 ---
 
 ## 🌟 Features
